@@ -5,13 +5,24 @@ import Main from './Main'
 import Footer from './Footer'
 import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup'
+import '../utils/utils'
 
 function App() {
-// const [isVisible, setIsVisible] = React.useState(false);
 const [isEditProfilePopupOpen, setPopupProfileState] = React.useState(false);
 const [isAddPlacePopupOpen, setPopupPlaceState] = React.useState(false);
 const [isEditAvatarPopupOpen, setPopupAvatarState] = React.useState(false);
+const [selectedCard, setSelectedCard] = React.useState(false);
 
+function closeAllPopups() {
+  setPopupProfileState(false);
+  setPopupPlaceState(false);
+  setPopupAvatarState(false);
+  setSelectedCard('');
+}
+
+function handleCardClick(card) {
+  setSelectedCard(card);
+}
 
 function handleEditProfileClick() {
   setPopupProfileState(true);
@@ -31,13 +42,15 @@ function handleEditAvatarClick() {
     <Main
     onEditProfile = {handleEditProfileClick}
     onAddPlace = {handleAddPlaceClick}
-    onEditAvatar = {handleEditAvatarClick}/>
+    onEditAvatar = {handleEditAvatarClick}
+    onCardClick = {handleCardClick}/>
     <Footer/>
     <PopupWithForm
       name = 'profile'
       title = 'Редактировать профиль'
       isOpen = {isEditProfilePopupOpen}
-      submitButton = 'Сохранить'>
+      submitButton = 'Сохранить'
+      onClose = {closeAllPopups}>
         <input type="text" name="name" id="name" className="popup__input popup__input__profile_name" placeholder="Имя" minLength="2"
           maxLength="40" required/>
         <p className="popup__input-error-message" id="name-error"></p>
@@ -49,7 +62,8 @@ function handleEditAvatarClick() {
       name = 'place'
       title = 'Новое место'
       isOpen = {isAddPlacePopupOpen}
-      submitButton = 'Создать'>
+      submitButton = 'Создать'
+      onClose = {closeAllPopups}>
         <input type="text" name="place-name" id="place-name" className="popup__input popup__input_place-name"
           placeholder="Название" minLength="2" maxLength="30" required/>
         <p className="popup__input-error-message" id="place-name-error"></p>
@@ -61,7 +75,8 @@ function handleEditAvatarClick() {
       name = 'userpic'
       title = 'Обновить аватар'
       isOpen = {isEditAvatarPopupOpen}
-      submitButton = 'Сохранить'>
+      submitButton = 'Сохранить'
+      onClose = {closeAllPopups}>
       <input type="url" name="userpic-url" id="userpic-url" className="popup__input popup__input_url"
         placeholder="Ссылка на картинку" required/>
         <p className="popup__input-error-message" id="userpic-url-error"></p>
@@ -74,17 +89,10 @@ function handleEditAvatarClick() {
       submitButton = 'Да'>
     </PopupWithForm>
 
-    <ImagePopup></ImagePopup>
-
-  <template className="card-template">
-    <div className="card">
-      <img src="/" className="card__photo" alt="Фото места."/>
-      <button className="card__delete-button"></button>
-      <h2 className="card__text"></h2>
-      <button type="button" className="card__like"></button>
-      <p className="card__like-counter">0</p>
-    </div>
-  </template>
+    <ImagePopup
+      card = {selectedCard}
+      onClose = {closeAllPopups}>
+    </ImagePopup>
   </div>
   );
 }
