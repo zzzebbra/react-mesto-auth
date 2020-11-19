@@ -100,6 +100,10 @@ class Api {
     })
   }
 
+  changeLikeCardStatus() {
+
+  }
+
   putLike(cardId) {
     return fetch(`${this.BaseUrl}cards/likes/${cardId}`, {
       method: 'PUT',

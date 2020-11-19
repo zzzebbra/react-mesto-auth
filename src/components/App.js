@@ -1,17 +1,20 @@
-import React from 'react'
+import React from 'react';
 import  '../index.css';
-import Header from './Header'
-import Main from './Main'
-import Footer from './Footer'
+import Header from './Header';
+import Main from './Main';
+import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
-import ImagePopup from './ImagePopup'
-import '../utils/utils'
+import ImagePopup from './ImagePopup';
+import '../utils/utils';
+import api from '../utils/Api';
+import CurrentUserContext from '../contexts/CurrentUserContext';
 
 function App() {
 const [isEditProfilePopupOpen, setPopupProfileState] = React.useState(false);
 const [isAddPlacePopupOpen, setPopupPlaceState] = React.useState(false);
 const [isEditAvatarPopupOpen, setPopupAvatarState] = React.useState(false);
 const [selectedCard, setSelectedCard] = React.useState(false);
+const [currentUser, setCurrentUser] = React.useState({});
 
 function closeAllPopups() {
   setPopupProfileState(false);
@@ -36,7 +39,15 @@ function handleEditAvatarClick() {
   setPopupAvatarState(true)
 }
 
+React.useEffect(() => {
+  api.getUserInfo()
+    .then((res) => {
+      setCurrentUser(res)
+    });
+}, [])
+
   return (
+    <CurrentUserContext.Provider value={currentUser}>
     <div className="page">
     <Header/>
     <Main
@@ -94,6 +105,7 @@ function handleEditAvatarClick() {
       onClose = {closeAllPopups}>
     </ImagePopup>
   </div>
+  </CurrentUserContext.Provider>
   );
 }
 
