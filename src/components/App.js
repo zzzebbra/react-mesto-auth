@@ -40,6 +40,14 @@ function handleEditAvatarClick() {
   setPopupAvatarState(true)
 }
 
+function handleUpdateUser(props) {
+  api.setUserInfo(props.name, props.description)
+  .then((res) => {
+    setCurrentUser(res)
+  })
+  closeAllPopups()
+}
+
 React.useEffect(() => {
   api.getUserInfo()
     .then((res) => {
@@ -57,7 +65,7 @@ React.useEffect(() => {
     onEditAvatar = {handleEditAvatarClick}
     onCardClick = {handleCardClick}/>
     <Footer/>
-    <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
+    <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
     <PopupWithForm
       name = 'place'
       title = 'Новое место'

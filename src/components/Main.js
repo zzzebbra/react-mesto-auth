@@ -38,7 +38,7 @@ function handleCardDelete(card) {
   api.deleteMyCard(card._id)
   .then((newCard) => {
     const newCards = cards.filter((c) => card._id !== newCard._id);
-    // Обновляем стейт
+
     setCards(newCards)
   })
 }
