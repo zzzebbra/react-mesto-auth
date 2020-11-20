@@ -13,10 +13,14 @@ function Card(props) {
   const isLiked = props.card.likes.some(i => i._id === currentUser._id);
 
 // Создаём переменную, которую после зададим в `className` для кнопки лайка
-  const cardLikeButtonClassName = `...`;
+  const cardLikeButtonClassName = `${isLiked ? 'card__like card__like_active' : 'card__like'}`;
+
+  function handleCardDelete() {
+    props.onCardDelete(props.card)
+  }
 
   function handleLikeClick() {
-    props.onCardLike(props.card)
+    props.onCardLike(props.card);
   }
 
   function handleClick() {
@@ -26,9 +30,9 @@ function Card(props) {
   return (
     <div className="card">
     <img onClick={handleClick} src={props.link} className="card__photo" alt={props.name}/>
-    <button className={cardDeleteButtonClassName}></button>
+    <button onClick={handleCardDelete} className={cardDeleteButtonClassName}></button>
     <h2 className="card__text">{props.name}</h2>
-    <button type="button" className="card__like" onClick={handleLikeClick}></button>
+    <button type="button" className={cardLikeButtonClassName} onClick={handleLikeClick}></button>
     <p className="card__like-counter">{props.likes}</p>
     </div>
   )

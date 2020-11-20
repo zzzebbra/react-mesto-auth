@@ -100,30 +100,11 @@ class Api {
     })
   }
 
-  changeLikeCardStatus() {
-
-  }
-
-  putLike(cardId) {
+  changeLikeCardStatus(cardId, isLiked) {
+    let methodValue;
+    isLiked ? (methodValue = "DELETE") : (methodValue = "PUT");
     return fetch(`${this.BaseUrl}cards/likes/${cardId}`, {
-      method: 'PUT',
-      headers: {
-        authorization: this.token,
-        'Content-Type': 'application/json',
-      }
-    })
-    .then((res) => {
-      if (res.ok) {
-        return res.json()}
-      else {
-        return Promise.reject(`Ошибка: ${res.status}`)
-      }
-    })
-  }
-
-  deleteLike(cardId) {
-    return fetch(`${this.BaseUrl}cards/likes/${cardId}`, {
-      method: 'DELETE',
+      method: methodValue,
       headers: {
         authorization: this.token,
         'Content-Type': 'application/json',

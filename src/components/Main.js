@@ -11,6 +11,7 @@ function Main(props) {
 
   React.useEffect(()=> {
     api.getCards()
+
     .then((res) => {
       setCards(res);
     }, [])
@@ -19,16 +20,27 @@ function Main(props) {
 function handleCardLike(card) {
   // Снова проверяем, есть ли уже лайк на этой карточке
   const isLiked = card.likes.some(i => i._id === currentUser._id);
-  console.log('click',isLiked)
 
   // Отправляем запрос в API и получаем обновлённые данные карточки
-  api.changeLikeCardStatus(card._id, !isLiked)
+  api.changeLikeCardStatus(card._id, isLiked)
+
+
   .then((newCard) => {
       // Формируем новый массив на основе имеющегося, подставляя в него новую карточку
     const newCards = cards.map((c) => c._id === card._id ? newCard : c);
     // Обновляем стейт
     setCards(newCards);
   });
+}
+
+function handleCardDelete(card) {
+
+  api.deleteMyCard(card._id)
+  .then((newCard) => {
+    const newCards = cards.filter((c) => card._id !== newCard._id);
+    // Обновляем стейт
+    setCards(newCards)
+  })
 }
 
   return (
@@ -46,7 +58,7 @@ function handleCardLike(card) {
         <button className="profile__add-button" onClick={props.onAddPlace}></button>
       </section>
       <section className="cards">
-        {cards.map((item) => (<Card card={item} onCardLike={handleCardLike} onCardClick={props.onCardClick} key={item._id} link={item.link} name={item.name} likes={item.likes.length}/>))}
+        {cards.map((item) => (<Card card={item} onCardDelete={handleCardDelete} onCardLike={handleCardLike} onCardClick={props.onCardClick} key={item._id} link={item.link} name={item.name} likes={item.likes.length}/>))}
       </section>
     </main>
   )
