@@ -8,7 +8,8 @@ import ImagePopup from './ImagePopup';
 import '../utils/utils';
 import api from '../utils/Api';
 import CurrentUserContext from '../contexts/CurrentUserContext';
-import EditProfilePopup from './EditProfilePopup'
+import EditProfilePopup from './EditProfilePopup';
+import EditAvatarPopup from './EditAvatarPopup';
 
 function App() {
 const [isEditProfilePopupOpen, setPopupProfileState] = React.useState(false);
@@ -48,6 +49,14 @@ function handleUpdateUser(props) {
   closeAllPopups()
 }
 
+function handleUpdateAvatar(props) {
+  api.updateAvatar(props.avatar)
+  .then((res) => {
+    setCurrentUser(res)
+  })
+  closeAllPopups()
+}
+
 React.useEffect(() => {
   api.getUserInfo()
     .then((res) => {
@@ -79,16 +88,7 @@ React.useEffect(() => {
           placeholder="Ссылка на картинку" required/>
         <p className="popup__input-error-message" id="place-url-error"></p>
     </PopupWithForm>
-    <PopupWithForm
-      name = 'userpic'
-      title = 'Обновить аватар'
-      isOpen = {isEditAvatarPopupOpen}
-      submitButton = 'Сохранить'
-      onClose = {closeAllPopups}>
-      <input type="url" name="userpic-url" id="userpic-url" className="popup__input popup__input_url"
-        placeholder="Ссылка на картинку" required/>
-        <p className="popup__input-error-message" id="userpic-url-error"></p>
-    </PopupWithForm>
+    <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
     <PopupWithForm
       name = "delete"
       title = 'Вы уверены?'
