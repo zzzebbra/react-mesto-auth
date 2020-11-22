@@ -1,4 +1,4 @@
-import {baseUrl, token} from './utils'
+import {baseUrl, token} from './constants'
 
 class Api {
   constructor(baseUrl, token) {
