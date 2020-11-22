@@ -1,14 +1,13 @@
-import {BaseUrl, token} from '../utils/utils'
-
+import {baseUrl, token} from './utils'
 
 class Api {
-  constructor(BaseUrl, token) {
-    this.BaseUrl = BaseUrl;
+  constructor(baseUrl, token) {
+    this.baseUrl = baseUrl;
     this.token = token;
   }
 
   getCards() {
-    return fetch(`${this.BaseUrl}cards`, {
+    return fetch(`${this.baseUrl}cards`, {
       method: 'GET',
       headers: {
         authorization: this.token,
@@ -25,7 +24,7 @@ class Api {
   }
 
   getUserInfo() {
-    return fetch(`${this.BaseUrl}users/me`, {
+    return fetch(`${this.baseUrl}users/me`, {
       method: 'GET',
       headers: {
         authorization: this.token,
@@ -42,7 +41,7 @@ class Api {
   }
 
   setUserInfo(name, about) {
-    return fetch(`${this.BaseUrl}users/me`, {
+    return fetch(`${this.baseUrl}users/me`, {
       method: 'PATCH',
       headers: {
         authorization: this.token,
@@ -63,7 +62,7 @@ class Api {
   }
 
   addNewCard(name, link) {
-    return fetch(`${this.BaseUrl}cards`, {
+    return fetch(`${this.baseUrl}cards`, {
       method: 'POST',
       headers: {
         authorization: this.token,
@@ -84,7 +83,7 @@ class Api {
   }
 
   deleteMyCard(cardId) {
-    return fetch(`${this.BaseUrl}cards/${cardId}`, {
+    return fetch(`${this.baseUrl}cards/${cardId}`, {
       method: 'DELETE',
       headers: {
         authorization: this.token,
@@ -103,7 +102,7 @@ class Api {
   changeLikeCardStatus(cardId, isLiked) {
     let methodValue;
     isLiked ? (methodValue = "DELETE") : (methodValue = "PUT");
-    return fetch(`${this.BaseUrl}cards/likes/${cardId}`, {
+    return fetch(`${this.baseUrl}cards/likes/${cardId}`, {
       method: methodValue,
       headers: {
         authorization: this.token,
@@ -120,7 +119,7 @@ class Api {
   }
 
   updateAvatar(link) {
-    return fetch(`${this.BaseUrl}users/me/avatar`, {
+    return fetch(`${this.baseUrl}users/me/avatar`, {
       method: 'PATCH',
       headers: {
         authorization: this.token,
@@ -141,6 +140,6 @@ class Api {
 
 }
 
-const api = new Api(BaseUrl, token);
+const api = new Api(baseUrl, token);
 
 export default api;

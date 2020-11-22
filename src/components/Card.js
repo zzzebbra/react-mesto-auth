@@ -2,11 +2,10 @@ import React from 'react';
 import CurrentUserContext from '../contexts/CurrentUserContext';
 
 function Card(props) {
-
   const currentUser = React.useContext(CurrentUserContext);
   const isOwn = props.card.owner._id === currentUser._id;
   const cardDeleteButtonClassName = (
-    `card__delete-button ${isOwn ? 'card__delete-button' : 'card__delete-button_hidden'}`
+    `card__delete-button ${isOwn ? '' : 'card__delete-button_hidden'}`
   );
 
   // Определяем, есть ли у карточки лайк, поставленный текущим пользователем
@@ -29,11 +28,11 @@ function Card(props) {
 
   return (
     <div className="card">
-    <img onClick={handleClick} src={props.link} className="card__photo" alt={props.name}/>
-    <button onClick={handleCardDelete} className={cardDeleteButtonClassName}></button>
-    <h2 className="card__text">{props.name}</h2>
-    <button type="button" className={cardLikeButtonClassName} onClick={handleLikeClick}></button>
-    <p className="card__like-counter">{props.likes}</p>
+      <img onClick={handleClick} src={props.link} className="card__photo" alt={props.name}/>
+      <button onClick={handleCardDelete} className={cardDeleteButtonClassName}></button>
+      <h2 className="card__text">{props.name}</h2>
+      <button type="button" className={cardLikeButtonClassName} onClick={handleLikeClick}></button>
+      <p className="card__like-counter">{props.likes}</p>
     </div>
   )
 }

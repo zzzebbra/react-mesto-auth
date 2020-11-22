@@ -1,7 +1,6 @@
 import React from 'react';
 import CurrentUserContext from '../contexts/CurrentUserContext';
 import editProfilePhoto from '../images/edit_profile-pic.svg';
-import api from '../utils/Api';
 import Card from './Card';
 
 
