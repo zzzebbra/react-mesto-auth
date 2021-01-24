@@ -1,4 +1,5 @@
 import React from 'react';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import  '../index.css';
 import Header from './Header';
 import Main from './Main';
@@ -11,6 +12,15 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 
+//const express = require('express');
+// const { PORT = 3000 } = process.env;
+
+ //const app = express();
+
+// app.listen(PORT, () => {
+//   console.log(`App listening on port ${PORT}`)
+// });
+
 function App() {
 const [isEditProfilePopupOpen, setPopupProfileState] = React.useState(false);
 const [isAddPlacePopupOpen, setPopupPlaceState] = React.useState(false);
@@ -18,6 +28,7 @@ const [isEditAvatarPopupOpen, setPopupAvatarState] = React.useState(false);
 const [selectedCard, setSelectedCard] = React.useState({});
 const [currentUser, setCurrentUser] = React.useState({});
 const [cards, setCards] = React.useState([]);
+const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
 React.useEffect(()=> {
   api.getCards()
@@ -95,6 +106,10 @@ function handleAddPlaceSubmit(props) {
   closeAllPopups()
 }
 
+function handleLoggedIn() {
+  setIsLoggedIn(true);
+}
+
 React.useEffect(() => {
   api.getUserInfo()
     .then((res) => {
@@ -103,6 +118,7 @@ React.useEffect(() => {
 }, [])
 
   return (
+    //<Route exact path='/'> { isLoggedIn ? <Redirect to '/'/> : <Redirect to '/sign-up'/> } </Route>
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <Header/>
