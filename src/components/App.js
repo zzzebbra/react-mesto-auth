@@ -11,15 +11,9 @@ import CurrentUserContext from '../contexts/CurrentUserContext';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
-
-//const express = require('express');
-// const { PORT = 3000 } = process.env;
-
- //const app = express();
-
-// app.listen(PORT, () => {
-//   console.log(`App listening on port ${PORT}`)
-// });
+import ProtectedRoute from './ProtectedRoute';
+import Login from './Login';
+import Register from './Register';
 
 function App() {
 const [isEditProfilePopupOpen, setPopupProfileState] = React.useState(false);
@@ -28,7 +22,7 @@ const [isEditAvatarPopupOpen, setPopupAvatarState] = React.useState(false);
 const [selectedCard, setSelectedCard] = React.useState({});
 const [currentUser, setCurrentUser] = React.useState({});
 const [cards, setCards] = React.useState([]);
-const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+const [isLoggedIn, setIsLoggedIn] = React.useState(true);
 
 React.useEffect(()=> {
   api.getCards()
@@ -116,36 +110,53 @@ React.useEffect(() => {
       setCurrentUser(res)
     });
 }, [])
-
+//
+//
   return (
-    //<Route exact path='/'> { isLoggedIn ? <Redirect to '/'/> : <Redirect to '/sign-up'/> } </Route>
     <CurrentUserContext.Provider value={currentUser}>
-      <div className="page">
-        <Header/>
-        <Main
-          onEditProfile = {handleEditProfileClick}
-          onAddPlace = {handleAddPlaceClick}
-          onEditAvatar = {handleEditAvatarClick}
-          onCardClick = {handleCardClick}
-          onCardLike = {handleCardLike}
-          onCardDelete = {handleCardDelete}
-          cards = {cards}/>
-        <Footer/>
-        <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
-        <AddPlacePopup onAddPlace={handleAddPlaceSubmit} isOpen = {isAddPlacePopupOpen} onClose = {closeAllPopups}/>
-        <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
-        <PopupWithForm
-          name = "delete"
-          title = 'Вы уверены?'
-          closeButton = 'popup__close-button_delete'
-          deleteButton = 'popup__submit-button_delete'
-          submitButton = 'Да'>
-        </PopupWithForm>
-        <ImagePopup
-          card = {selectedCard}
-          onClose = {closeAllPopups}>
-        </ImagePopup>
-      </div>
+    <Switch>
+    {/* <ProtectedRoute path='/' loggedIn={isLoggedIn} component={Header}></ProtectedRoute> */}
+      <ProtectedRoute
+            path='/' 
+            loggedIn={isLoggedIn} 
+            component={Main}
+            onEditProfile = {handleEditProfileClick}
+            onAddPlace = {handleAddPlaceClick}
+            onEditAvatar = {handleEditAvatarClick}
+            onCardClick = {handleCardClick}
+            onCardLike = {handleCardLike}
+            onCardDelete = {handleCardDelete}
+            cards = {cards}></ProtectedRoute>
+      <Route path='/sign-in'> <div className="page"><Header loggedIn={isLoggedIn} /> <Login submitButton='Войти' handleLogin={handleLoggedIn}/> <Footer /></div> </Route>
+      <Route path='/sign-up'> <div className="page"><Header loggedIn={isLoggedIn} /> <Register submitButton='Зарегистрироваться' handleLogin={handleLoggedIn}/> <Footer /> </div></Route>
+
+          <Header/>
+          <Main
+            onEditProfile = {handleEditProfileClick}
+            onAddPlace = {handleAddPlaceClick}
+            onEditAvatar = {handleEditAvatarClick}
+            onCardClick = {handleCardClick}
+            onCardLike = {handleCardLike}
+            onCardDelete = {handleCardDelete}
+            cards = {cards}/>
+          <Footer/>
+          <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
+          <AddPlacePopup onAddPlace={handleAddPlaceSubmit} isOpen = {isAddPlacePopupOpen} onClose = {closeAllPopups} />
+          <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
+          <PopupWithForm
+            name = "delete"
+            title = 'Вы уверены?'
+            closeButton = 'popup__close-button_delete'
+            deleteButton = 'popup__submit-button_delete'
+            submitButton = 'Да'>
+          </PopupWithForm>
+          <ImagePopup
+            card = {selectedCard}
+            onClose = {closeAllPopups}>
+          </ImagePopup>
+
+
+    </Switch>
     </CurrentUserContext.Provider>
   );
 }
