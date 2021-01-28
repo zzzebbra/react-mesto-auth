@@ -1,9 +1,67 @@
-import {baseUrl, token} from './constants'
+import {baseUrl, baseAuthUrl, token} from './constants'
 
 class Api {
-  constructor(baseUrl, token) {
+  constructor(baseUrl, baseAuthUrl, token) {
     this.baseUrl = baseUrl;
     this.token = token;
+    this.baseAuthUrl = baseAuthUrl;
+  }
+
+  signup(password, email) {
+    return fetch(`${this.baseAuthUrl}/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        password: password,
+        email: email
+      })
+    })
+    .then((res) => {
+      if (res.ok) {
+        return res.json()}
+      else {
+        return Promise.reject(`Ошибка: ${res.status}`)
+      }
+    })
+  }
+
+  login(password, email) {
+    return fetch(`${this.baseAuthUrl}/signin`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        password: password,
+        email: email
+      })
+    })
+    .then((res) => {
+      if (res.ok) {
+        return res.json()}
+      else {
+        return Promise.reject(`Ошибка: ${res.status}`)
+      }
+    })
+  }
+
+  getUserData(jwt) {
+    return fetch(`${this.baseAuthUrl}/users/me`, {
+      method: 'GET',
+      headers: {
+        authorization: `Bearer ${jwt}`,
+        'Content-Type': 'application/json',
+      }
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json()}
+        else {
+          return Promise.reject(`Ошибка: ${res.status}`)
+        }
+      })
   }
 
   getCards() {
@@ -140,6 +198,6 @@ class Api {
 
 }
 
-const api = new Api(baseUrl, token);
+const api = new Api(baseUrl, baseAuthUrl, token);
 
 export default api;

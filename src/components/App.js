@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import  '../index.css';
 import Header from './Header';
 import Main from './Main';
@@ -21,16 +21,46 @@ const [isAddPlacePopupOpen, setPopupPlaceState] = React.useState(false);
 const [isEditAvatarPopupOpen, setPopupAvatarState] = React.useState(false);
 const [selectedCard, setSelectedCard] = React.useState({});
 const [currentUser, setCurrentUser] = React.useState({});
+const [loggedUser, setLoggedUser] = React.useState({});
 const [cards, setCards] = React.useState([]);
-const [isLoggedIn, setIsLoggedIn] = React.useState(true);
+const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+const history = useHistory();
 
 React.useEffect(()=> {
   api.getCards()
   .then((res) => {
     setCards(res);
   })
+if(localStorage.getItem('token')){
+  api.getUserData(localStorage.getItem('token')).then((res)=> onAuth(res))
+}
 }, [])
 
+function register({password, email}) {
+  console.log(password, email)
+  api.signup(password,email)
+  .then((res)=> console.log(res))
+}
+
+function login({password, email}) {
+  console.log(password, email)
+  api.login(password,email)
+  .then((res)=> {console.log(res.token);
+    localStorage.setItem('token', res.token);
+    api.getUserData(res.token).then ((res)=> {console.log(res); onAuth(res) } )})
+}
+
+function onAuth(res) {
+  setIsLoggedIn(true);
+  setLoggedUser({email: res.data.email, _id: res.data._id})
+  history.push('/')
+}
+
+function onLogout() {
+  setIsLoggedIn(false);
+  setLoggedUser({});
+  localStorage.removeItem('token');
+}
 function handleCardLike(card) {
 // Снова проверяем, есть ли уже лайк на этой карточке
 const isLiked = card.likes.some(i => i._id === currentUser._id);
@@ -110,15 +140,23 @@ React.useEffect(() => {
       setCurrentUser(res)
     });
 }, [])
-//
-//
+
+
   return (
+    <div className="page">
     <CurrentUserContext.Provider value={currentUser}>
+    <Route exact path="/">
+    <Header loggedIn={isLoggedIn}
+           link="/sign-in"
+          email={loggedUser.email}
+          onLogout={onLogout}
+          text="Выйти"
+            />
+            </Route>
     <Switch>
-    {/* <ProtectedRoute path='/' loggedIn={isLoggedIn} component={Header}></ProtectedRoute> */}
       <ProtectedRoute
-            path='/' 
-            loggedIn={isLoggedIn} 
+            exact path='/'
+            loggedIn={isLoggedIn}
             component={Main}
             onEditProfile = {handleEditProfileClick}
             onAddPlace = {handleAddPlaceClick}
@@ -127,19 +165,24 @@ React.useEffect(() => {
             onCardLike = {handleCardLike}
             onCardDelete = {handleCardDelete}
             cards = {cards}></ProtectedRoute>
-      <Route path='/sign-in'> <div className="page"><Header loggedIn={isLoggedIn} /> <Login submitButton='Войти' handleLogin={handleLoggedIn}/> <Footer /></div> </Route>
-      <Route path='/sign-up'> <div className="page"><Header loggedIn={isLoggedIn} /> <Register submitButton='Зарегистрироваться' handleLogin={handleLoggedIn}/> <Footer /> </div></Route>
 
-          <Header/>
-          <Main
-            onEditProfile = {handleEditProfileClick}
-            onAddPlace = {handleAddPlaceClick}
-            onEditAvatar = {handleEditAvatarClick}
-            onCardClick = {handleCardClick}
-            onCardLike = {handleCardLike}
-            onCardDelete = {handleCardDelete}
-            cards = {cards}/>
-          <Footer/>
+     <Route path='/sign-in'>
+     <Header loggedIn={isLoggedIn}
+           link="/sign-up"
+          email=""
+          text="Регистрация"
+            />
+      <Login submitButton='Войти' onSubmit={login} handleLogin={handleLoggedIn}/>
+      </Route>
+      <Route path='/sign-up'>
+      <Header loggedIn={isLoggedIn}
+           link="/sign-in"
+          email=""
+          text="Войти"
+            />
+        <Register submitButton='Зарегистрироваться' onSubmit={register} handleLogin={handleLoggedIn}/>
+        </Route>
+      </Switch>
           <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
           <AddPlacePopup onAddPlace={handleAddPlaceSubmit} isOpen = {isAddPlacePopupOpen} onClose = {closeAllPopups} />
           <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
@@ -155,9 +198,9 @@ React.useEffect(() => {
             onClose = {closeAllPopups}>
           </ImagePopup>
 
-
-    </Switch>
+          <Footer/>
     </CurrentUserContext.Provider>
+    </div>
   );
 }
 

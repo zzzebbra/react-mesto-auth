@@ -1,21 +1,24 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import logo from '../../src/images/logo_mesto.svg'
 
 function Header(props) {
   // eslint-disable-next-line no-cond-assign
-  if(!props.loggedIn) {
+  if(props.loggedIn) {
     return(
       <div className="header">
-      <img className="logo" src={logo} alt="Логотип"/>
-      <p className="header__user"></p>
-      <p className="header__logout"></p>
-    </div>
+        <img className="logo" src={logo} alt="Логотип"/>
+        <div className="header__text-wrapper">
+          <p className="header__user">{props.email}</p>
+          <Link to={props.link} onClick={props.onLogout} className="header__logout">  <p className="header__text">{props.text}</p> </Link>
+        </div>
+      </div>
     )
   }
   return (
     <div className="header">
       <img className="logo" src={logo} alt="Логотип"/>
-      <p className="header__login"></p>
+      <a href='/sign-up' className="header__register"><p className="header__text">Регистрация</p></a>
     </div>
   )
 }
