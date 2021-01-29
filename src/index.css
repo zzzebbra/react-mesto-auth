@@ -64,3 +64,6 @@
 @import url(./blocks/register/__header/register__header.css);
 @import url(./blocks/register/__form/register__form.css);
 @import url(./blocks/register/__form-link/register__form-link.css);
+@import url(./blocks/info-tooltip/info-tooltip.css);
+@import url(./blocks/info-tooltip/__img/info-tooltip__img.css);
+@import url(./blocks/info-tooltip/__text/info-tooltip__text.css);

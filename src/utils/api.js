@@ -1,5 +1,12 @@
 import {baseUrl, baseAuthUrl, token} from './constants'
 
+const handleOriginalResponse = (res) => {
+  if (!res.ok) {
+    return Promise.reject(`Ошибка: ${res.status}`);
+  }
+  return res.json();
+}
+
 class Api {
   constructor(baseUrl, baseAuthUrl, token) {
     this.baseUrl = baseUrl;
@@ -18,13 +25,7 @@ class Api {
         email: email
       })
     })
-    .then((res) => {
-      if (res.ok) {
-        return res.json()}
-      else {
-        return Promise.reject(`Ошибка: ${res.status}`)
-      }
-    })
+    .then(handleOriginalResponse)
   }
 
   login(password, email) {
@@ -38,13 +39,7 @@ class Api {
         email: email
       })
     })
-    .then((res) => {
-      if (res.ok) {
-        return res.json()}
-      else {
-        return Promise.reject(`Ошибка: ${res.status}`)
-      }
-    })
+    .then(handleOriginalResponse)
   }
 
   getUserData(jwt) {
@@ -55,13 +50,7 @@ class Api {
         'Content-Type': 'application/json',
       }
     })
-      .then((res) => {
-        if (res.ok) {
-          return res.json()}
-        else {
-          return Promise.reject(`Ошибка: ${res.status}`)
-        }
-      })
+    .then(handleOriginalResponse)
   }
 
   getCards() {
@@ -72,13 +61,7 @@ class Api {
         'Content-Type': 'application/json',
       }
     })
-      .then((res) => {
-        if (res.ok) {
-          return res.json()}
-        else {
-          return Promise.reject(`Ошибка: ${res.status}`)
-        }
-      })
+    .then(handleOriginalResponse)
   }
 
   getUserInfo() {
@@ -89,13 +72,7 @@ class Api {
         'Content-Type': 'application/json',
       }
     })
-    .then((res) => {
-      if (res.ok) {
-        return res.json()}
-      else {
-        return Promise.reject(`Ошибка: ${res.status}`)
-      }
-    })
+    .then(handleOriginalResponse)
   }
 
   setUserInfo(name, about) {
@@ -110,13 +87,7 @@ class Api {
         about: about
       })
     })
-    .then((res) => {
-      if (res.ok) {
-        return res.json()}
-      else {
-        return Promise.reject(`Ошибка: ${res.status}`)
-      }
-    })
+    .then(handleOriginalResponse)
   }
 
   addNewCard(name, link) {
@@ -131,13 +102,7 @@ class Api {
         link: link
       })
     })
-    .then((res) => {
-      if (res.ok) {
-        return res.json()}
-      else {
-        return Promise.reject(`Ошибка: ${res.status}`)
-      }
-    })
+    .then(handleOriginalResponse)
   }
 
   deleteMyCard(cardId) {
@@ -148,13 +113,7 @@ class Api {
         'Content-Type': 'application/json',
       }
     })
-    .then((res) => {
-      if (res.ok) {
-        return res.json()}
-      else {
-        return Promise.reject(`Ошибка: ${res.status}`)
-      }
-    })
+    .then(handleOriginalResponse)
   }
 
   changeLikeCardStatus(cardId, isLiked) {
@@ -167,13 +126,7 @@ class Api {
         'Content-Type': 'application/json',
       }
     })
-    .then((res) => {
-      if (res.ok) {
-        return res.json()}
-      else {
-        return Promise.reject(`Ошибка: ${res.status}`)
-      }
-    })
+    .then(handleOriginalResponse)
   }
 
   updateAvatar(link) {
@@ -187,13 +140,7 @@ class Api {
         avatar: link
       })
     })
-    .then((res) => {
-      if (res.ok) {
-        return res.json()}
-      else {
-        return Promise.reject(`Ошибка: ${res.status}`)
-      }
-    })
+    .then(handleOriginalResponse)
   }
 
 }

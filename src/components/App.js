@@ -14,6 +14,9 @@ import AddPlacePopup from './AddPlacePopup';
 import ProtectedRoute from './ProtectedRoute';
 import Login from './Login';
 import Register from './Register';
+import InfoTooltip from './InfoTooltip';
+import success from '../images/done.svg';
+import error from '../../src/images/error.svg';
 
 function App() {
 const [isEditProfilePopupOpen, setPopupProfileState] = React.useState(false);
@@ -24,6 +27,8 @@ const [currentUser, setCurrentUser] = React.useState({});
 const [loggedUser, setLoggedUser] = React.useState({});
 const [cards, setCards] = React.useState([]);
 const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = React.useState(false);
+const [operationStatus, setOperationStatus] = React.useState(false);
 const history = useHistory();
 
 React.useEffect(()=> {
@@ -36,18 +41,23 @@ if(localStorage.getItem('token')){
 }
 }, [])
 
+function openInfoTooltip() {
+  setIsInfoTooltipPopupOpen(true)
+}
+
 function register({password, email}) {
-  console.log(password, email)
-  api.signup(password,email)
-  .then((res)=> console.log(res))
+  api.signup(password, email)
+  .then ((res)=> { if (res.data) { setOperationStatus(true); openInfoTooltip()} else { setOperationStatus(false); openInfoTooltip() }    } )
+  .catch((err)=> {setOperationStatus(false); openInfoTooltip();} )
 }
 
 function login({password, email}) {
-  console.log(password, email)
-  api.login(password,email)
-  .then((res)=> {console.log(res.token);
+  api.login(password, email)
+  .then((res)=> {
     localStorage.setItem('token', res.token);
-    api.getUserData(res.token).then ((res)=> {console.log(res); onAuth(res) } )})
+    api.getUserData(res.token)
+    .then ((res)=> { onAuth(res)} ) })
+    .catch((err)=> {setOperationStatus(false); openInfoTooltip();} )
 }
 
 function onAuth(res) {
@@ -61,6 +71,7 @@ function onLogout() {
   setLoggedUser({});
   localStorage.removeItem('token');
 }
+
 function handleCardLike(card) {
 // Снова проверяем, есть ли уже лайк на этой карточке
 const isLiked = card.likes.some(i => i._id === currentUser._id);
@@ -87,6 +98,7 @@ function closeAllPopups() {
   setPopupProfileState(false);
   setPopupPlaceState(false);
   setPopupAvatarState(false);
+  setIsInfoTooltipPopupOpen(false);
   setSelectedCard({});
 }
 
@@ -110,24 +122,24 @@ function handleUpdateUser(props) {
   api.setUserInfo(props.name, props.description)
     .then((res) => {
       setCurrentUser(res)
+      closeAllPopups()
     });
-  closeAllPopups()
 }
 
 function handleUpdateAvatar(props) {
   api.updateAvatar(props.avatar)
     .then((res) => {
       setCurrentUser(res)
+      closeAllPopups()
     });
-  closeAllPopups()
 }
 
 function handleAddPlaceSubmit(props) {
   api.addNewCard(props.name, props.link)
     .then((newCard) => {
       setCards([newCard, ...cards]);
+      closeAllPopups()
     });
-  closeAllPopups()
 }
 
 function handleLoggedIn() {
@@ -189,15 +201,21 @@ React.useEffect(() => {
           <PopupWithForm
             name = "delete"
             title = 'Вы уверены?'
-            closeButton = 'popup__close-button_delete'
-            deleteButton = 'popup__submit-button_delete'
+            closeButtonClassName = 'popup__close-button_delete'
+            deleteButtonClassName = 'popup__submit-button_delete'
             submitButton = 'Да'>
           </PopupWithForm>
           <ImagePopup
             card = {selectedCard}
             onClose = {closeAllPopups}>
           </ImagePopup>
-
+          <InfoTooltip
+          image=''
+          text=''
+          isOpen={isInfoTooltipPopupOpen}
+          operationStatus={operationStatus}
+          onClose={closeAllPopups}
+          />
           <Footer/>
     </CurrentUserContext.Provider>
     </div>
